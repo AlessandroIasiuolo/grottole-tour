@@ -4,6 +4,8 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -23,6 +25,9 @@ app.use('/api/slots', slotRoutes);
 app.use('/api/bookings', bookingRoutes);
 
 app.get('/', (req, res) => res.send('API Grottole Tour attiva'));
+
+// Documentazione interattiva delle API, generata da OpenAPI/Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // --- Setup HTTP server + Socket.IO ---
 const server = http.createServer(app);
