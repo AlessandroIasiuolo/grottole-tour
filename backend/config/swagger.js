@@ -11,7 +11,8 @@ const options = {
         'Due ruoli: "turista" (prenota visite) e "guida" (pubblica tour e gestisce le prenotazioni).'
     },
     servers: [
-      { url: 'http://localhost:5000', description: 'Ambiente locale' }
+      { url: 'http://localhost:5000', description: 'Ambiente locale' },
+      { url: 'https://grottole-tour-backend.onrender.com', description: 'Produzione (Render)' }
     ],
     components: {
       securitySchemes: {
