@@ -1,0 +1,115 @@
+### 1. Registrazione Guida
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nome": "Marco Guida",
+  "email": "marco.guida@example.com",
+  "password": "password123",
+  "ruolo": "guida"
+}
+
+### 2. Login Guida
+# @name loginGuida
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "marco.guida@example.com",
+  "password": "password123"
+}
+
+> {%
+    client.global.set("tokenGuida", response.body.token);
+%}
+
+### 3. Registrazione Turista
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nome": "Luca Turista",
+  "email": "luca.turista@example.com",
+  "password": "password123",
+  "ruolo": "turista"
+}
+
+### 4. Login Turista
+# @name loginTurista
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "luca.turista@example.com",
+  "password": "password123"
+}
+
+> {%
+    client.global.set("tokenTurista", response.body.token);
+%}
+
+
+### 5. Crea un Tour (Solo Guida)
+# @name creaTour
+POST http://localhost:5000/api/tours
+Content-Type: application/json
+Authorization: Bearer {{tokenGuida}}
+
+{
+  "titolo": "Centro Storico e Castello di Grottole",
+  "descrizione": "Una passeggiata guidata tra i vicoli del borgo antico e la storia del castello.",
+  "luogo": "Piazza II Maggio, Grottole",
+  "durata": 120
+}
+
+> {%
+    client.global.set("tourId", response.body._id);
+%}
+
+
+### 6. Leggi Tutti i Tour (Pubblico)
+GET http://localhost:5000/api/tours
+
+
+### 7. Crea uno Slot per il Tour (Solo Guida)
+# @name creaSlot
+POST http://localhost:5000/api/slots
+Content-Type: application/json
+Authorization: Bearer {{tokenGuida}}
+
+{
+  "tourId": "{{tourId}}",
+  "data": "2026-09-15T10:00:00.000Z",
+  "ora": "10:00",
+  "postiDisponibili": 10
+}
+
+> {%
+    client.global.set("slotId", response.body._id);
+%}
+
+
+### 8. Crea una Prenotazione (Solo Turista)
+# @name creaPrenotazione
+POST http://localhost:5000/api/bookings
+Content-Type: application/json
+Authorization: Bearer {{tokenTurista}}
+
+{
+  "slotId": "{{slotId}}",
+  "numeroPersone": 2
+}
+
+> {%
+    client.global.set("bookingId", response.body._id);
+%}
+
+
+### 9. Accetta la Prenotazione (Solo Guida)
+PATCH http://localhost:5000/api/bookings/{{bookingId}}
+Content-Type: application/json
+Authorization: Bearer {{tokenGuida}}
+
+{
+  "stato": "accettata"
+}
